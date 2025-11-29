@@ -224,40 +224,50 @@ setTimeout(()=>{
     document.getElementById("envelope").style.display="block";
 },2500);
 
-/* ---------------- 信封翻盖 → 卡片 ---------------- */
-const flap = document.querySelector("#envelope .flap");
+/* ---------------- 点击任意位置打开信封 → 卡片 ---------------- */
+const envelope = document.getElementById("envelope");
 const letter = document.getElementById("letter");
 const tip = document.getElementById("tip");
 
-flap.addEventListener("click", ()=>{
-    document.getElementById("envelope").classList.add("open");
-    tip.style.display="none";
-    const text = `🎉 亲爱的宝贝，生日快乐！\n愿你的每一天都被阳光和笑容环绕，温暖而美好。\n愿所有的惊喜与甜蜜，都悄悄来到你的身边，\n每一个心愿都如星光般闪耀 ✨\n\n—— 永远爱你的我`;
-    letter.style.display="block";
-    let i=0;
-    function typeWriter(){
-        if(i<text.length){
-            letter.textContent+=text.charAt(i);
-            i++;
-            setTimeout(typeWriter,40);
-        }
-    }
-    typeWriter();
-});
+let opened = false; // 防止重复触发
+document.addEventListener("click", (e)=>{
+    // 首次点击打开信封
+    if(!opened){
+        opened = true;
+        envelope.classList.add("open");
+        tip.style.display = "none";
+        letter.style.display = "block";
+        const text = `🎉 亲爱的王能卉小朋友，生日快乐！
+愿你的每一天都被阳光和笑容环绕，温暖而美好。
+愿所有的惊喜与甜蜜，都悄悄来到你的身边，
+每一个心愿都如星光般闪耀 ✨
 
-/* ---------------- 点击心心效果 ---------------- */
-document.addEventListener("click", e=>{
-    if(e.target===flap) return;
-    const heart=document.createElement("div");
-    heart.className="heart";
-    heart.textContent="❤";
-    heart.style.left=e.pageX+"px";
-    heart.style.top=e.pageY+"px";
-    heart.style.transform=`rotate(${Math.random()*360}deg) scale(${0.8+Math.random()*0.6})`;
+—— 送给你的 MR 陈`;
+
+        let i = 0;
+        function typeWriter(){
+            if(i < text.length){
+                letter.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 40);
+            }
+        }
+        typeWriter();
+        return; // 这次点击用于打开信封，不生成心心
+    }
+
+    // 其他点击生成心心效果
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.textContent = "❤";
+    heart.style.left = e.pageX + "px";
+    heart.style.top = e.pageY + "px";
+    heart.style.transform = `rotate(${Math.random()*360}deg) scale(${0.8 + Math.random()*0.6})`;
     heart.style.color = `hsl(${Math.random()*360},80%,70%)`;
     document.body.appendChild(heart);
     setTimeout(()=>heart.remove(),1400);
 });
+
 
 /* ---------------- 背景落花 ---------------- */
 const cvs=document.getElementById("canvas");
